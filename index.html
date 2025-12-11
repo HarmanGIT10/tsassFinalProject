@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Catalyst | 2077</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-dark: #0a0f0d;
+            --bg-panel: #141a17;
+            --primary: #00ff9d; /* Neon Green */
+            --secondary: #00bcd4; /* Cyan */
+            --accent: #ffb703; /* Solar Amber */
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --glass: rgba(20, 26, 23, 0.9);
+            --border: 1px solid rgba(0, 255, 157, 0.2);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- BACKGROUND FX --- */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 157, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 157, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-btn {
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover::after, .nav-btn.active::after {
+            width: 100%;
+        }
+
+        /* --- LAYOUT & SECTIONS --- */
+        main {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 5%;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.6s ease-in-out;
+            padding-bottom: 4rem;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HOMEPAGE --- */
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            transition: var(--transition);
+            background: rgba(0, 255, 157, 0.05);
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .cta-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .hero-visual {
+            flex: 1;
+            height: 80%;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            border: var(--border);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .hero-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 5s ease;
+        }
+
+        .hero-visual:hover img {
+            transform: scale(1.05);
+        }
+
+        /* --- STORY PAGE --- */
+        .story-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-panel);
+            padding: 3rem;
+            border-radius: 15px;
+            border: var(--border);
+        }
+
+        .story-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--text-muted);
+            padding-bottom: 1rem;
+        }
+
+        .story-img-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border: 1px solid #333;
+        }
+
+        .story-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .download-row {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* --- CONCEPTS PAGE --- */
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--bg-panel);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 188, 212, 0.1);
+        }
+
+        .card h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* --- REPORT & REFERENCES PAGE --- */
+        .report-section {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .report-download-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-panel);
+            border-radius: 15px;
+            border: var(--border);
+            text-align: center;
+            padding: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .file-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Reference Card Style */
+        .ref-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 10px 10px 0;
+            transition: var(--transition);
+        }
+
+        .ref-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            padding-left: 2rem;
+        }
+
+        .ref-title {
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .ref-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .ref-link {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+            color: var(--primary);
+        }
+
+        /* --- ABOUT PAGE --- */
+        .about-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .team-list h3 { color: var(--primary); margin-bottom: 1.5rem; }
+        .team-member {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 2px solid var(--accent);
+        }
+
+        .sop-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { flex-direction: column; height: auto; padding-top: 2rem; }
+            .hero-visual { width: 100%; height: 300px; }
+            .hero h1 { font-size: 2.5rem; }
+            nav { flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <nav>
+        <div class="logo">THE CATALYST</div>
+        <div class="nav-links">
+            <div class="nav-btn active" onclick="showPage('home')">Home</div>
+            <div class="nav-btn" onclick="showPage('story')">Story</div>
+            <div class="nav-btn" onclick="showPage('concepts')">Concepts</div>
+            <div class="nav-btn" onclick="showPage('report')">Research</div>
+            <div class="nav-btn" onclick="showPage('about')">About</div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="page-section active">
+            <div class="hero">
+                <div class="hero-text">
+                    <h1>The Catalyst</h1>
+                    <p>A vision of decentralized clean energy in 2077. <br>When the grid fails, nature takes over.</p>
+                    <button class="cta-btn" onclick="showPage('story')">Enter The Future</button>
+                </div>
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Futuristic City Architecture">
+                </div>
+            </div>
+        </section>
+
+        <section id="story" class="page-section">
+            <div class="story-container">
+                <div class="story-header">
+                    <h2>The Narrative</h2>
+                    <p style="color: var(--accent);">Year: 2077 | Location: The Great Mountain Lattice</p>
+                </div>
+                
+                <div class="story-img-container">
+                    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Atmospheric Mountain Landscape">
+                </div>
+
+                <div class="story-content">
+                    <p><strong>The Catalyst</strong> is a short speculative narrative set in 2077, where global energy systems collapse after decades of dependence on centralized power grids. The fragile megastructures of the mid-21st century could no longer sustain the demands of a hyper-connected world.</p>
+                    
+                    <p>The story follows <strong>Joseph Joestar</strong>, a rogue engineer who saw the collapse coming. While the world built taller towers, Joseph retreated to his mountain homeland. There, he developed an adaptive, nature-inspired energy lattice called <strong>Project Caesar</strong>.</p>
+                    
+                    <p>When the world finally went dark, cities fell into chaos. But slowly, a soft glow began to emanate from the mountains. Joseph's decentralized system didn't just power his home; it quietly restored energy across regions using biomimetic mycelium-like networks, proving that true resilience comes from working with nature—not against it.</p>
+                    
+                    <p>The story illustrates ideas of sustainable engineering, systems thinking, and the shift from control to coexistence.</p>
+                </div>
+
+                <div class="download-row">
+                    <span style="color: var(--text-muted)">Read the full narrative offline:</span>
+                    <a href="tsassstory.docx" download class="cta-btn" style="font-size: 0.8rem; padding: 0.8rem 1.5rem;">Download Story (.docx)</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="concepts" class="page-section">
+            <h2 style="text-align: center; margin-bottom: 1rem;">Core Philosophies</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem;">The pillars of the new world.</p>
+            
+            <div class="concepts-grid">
+                <div class="card">
+                    <h3>Decentralized Energy</h3>
+                    <p>Moving away from a single point of failure (the main grid) to a mesh network of micro-producers. Like a forest, if one tree falls, the ecosystem survives. In 2077, every home is a power plant.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Systems Thinking</h3>
+                    <p>Understanding that engineering does not exist in a vacuum. Energy, society, economy, and ecology are interconnected loops. Project Caesar succeeds because it accounts for the whole system, not just the output.</p>
+                </div>
+
+                <div class="card">
+                    <h3>ESEM</h3>
+                    <p><strong>Environmentally Sensitive Engineering & Manufacturing.</strong> A design methodology that prioritizes low-impact materials and regenerative life-cycles. It asks: "What happens to this machine when it dies?"</p>
+                </div>
+
+                <div class="card">
+                    <h3>Adaptive Ethics</h3>
+                    <p>The moral framework of 2077. Technology must adapt to human and environmental needs dynamically, rather than forcing the environment to adapt to technology.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="report" class="page-section">
+            <div class="report-section">
+                <div class="report-download-box">
+                    <div class="file-icon">📊</div>
+                    <h2>Academic Research Report</h2>
+                    <p style="margin: 1rem 0 2rem 0; color: var(--text-muted);">
+                        Technical breakdown of lattice energy grids, socio-economic analysis of the 2077 collapse, and engineering principles behind Project Caesar.
+                    </p>
+                    <a href="tsassreport.docx" download class="cta-btn">Download Full Report (.docx)</a>
+                    <p style="font-size: 0.8rem; color: var(--accent); margin-top: 1rem;">*Ensure tsassreport.docx is in the project folder.</p>
+                </div>
+
+                <h3 style="margin-bottom: 1.5rem; padding-left: 10px; border-left: 4px solid var(--primary);">References & Citations</h3>
+                
+                <div class="ref-grid">
+                    <div class="ref-card">
+                        <span class="ref-title">Typology of future clean energy communities: An exploratory structure, opportunities, and challenges</span>
+                        <span class="ref-meta">Gui, E. M., & MacGill, I. (2018) | Energy Research & Social Science</span>
+                        <a href="https://www.sciencedirect.com/science/article/abs/pii/S221462961730347X" target="_blank" class="ref-link">Read Source &rarr;</a>
+                    </div>
+
+                    <div class="ref-card">
+                        <span class="ref-title">Earth systems engineering and management</span>
+                        <span class="ref-meta">Schneider, S. H. (2001) | Nature</span>
+                        <a href="https://www.nature.com/articles/35053203" target="_blank" class="ref-link">Read Source &rarr;</a>
+                    </div>
+
+                    <div class="ref-card">
+                        <span class="ref-title">Preparing future engineers for challenges of the 21st century: Sustainable engineering</span>
+                        <span class="ref-meta">Davidson, C. I., Hendrickson, C. T., Matthews, H. S., et al. (2010) | Journal of Cleaner Production</span>
+                        <a href="https://www.sciencedirect.com/science/article/abs/pii/S0959652609004156" target="_blank" class="ref-link">Read Source &rarr;</a>
+                    </div>
+
+                    <div class="ref-card">
+                        <span class="ref-title">A review on clean energy solutions for better sustainability</span>
+                        <span class="ref-meta">Dincer, I., & Acar, C. (2015) | International Journal of Energy Research</span>
+                        <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/er.3329" target="_blank" class="ref-link">Read Source &rarr;</a>
+                    </div>
+
+                    <div class="ref-card">
+                        <span class="ref-title">Handbook of energy engineering</span>
+                        <span class="ref-meta">Thumann, A., & Mehta, D. P. (2020) | Taylor & Francis</span>
+                        <a href="https://www.taylorfrancis.com/books/mono/10.1201/9781003151715" target="_blank" class="ref-link">Read Source &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="page-section">
+            <h2 style="margin-bottom: 2rem;">About The Project</h2>
+            <div class="about-layout">
+                <div class="team-list">
+                    <h3>The Authors</h3>
+                    
+                    <div class="team-member">
+                        <strong>Student Name 1</strong><br>
+                        <span style="color: var(--secondary)">Roll No: XXXXXX</span><br>
+                        <small style="color: var(--text-muted)">Lead Researcher & Narrative Design</small>
+                    </div>
+
+                    <div class="team-member">
+                        <strong>Student Name 2</strong><br>
+                        <span style="color: var(--secondary)">Roll No: YYYYYY</span><br>
+                        <small style="color: var(--text-muted)">Systems Analysis & Web Development</small>
+                    </div>
+                    
+                    <div class="team-member" style="border-left-color: var(--primary);">
+                        <strong>Course Details</strong><br>
+                        Sustainable Engineering (Code 101)<br>
+                        Semester 6, 2025
+                    </div>
+                </div>
+
+                <div class="sop-box">
+                    <h3>Statement of Purpose</h3>
+                    <p style="margin-bottom: 1rem;">
+                        "The Catalyst" explores the intersection of narrative fiction and hard engineering. We believe that to build a sustainable future, we must first be able to imagine it. 
+                    </p>
+                    <p>
+                        Our goal is to demonstrate that decentralized systems are not just a technical upgrade, but a necessary evolution for the survival of civilization. By framing these complex engineering concepts within the story of Joseph Joestar, we aim to make the dry technicalities of ESEM and lattice grids accessible and inspiring.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2077 The Catalyst Project. Sustainable Engineering Dept.</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // 1. Hide all sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 2. Show target section
+            document.getElementById(pageId).classList.add('active');
+
+            // 3. Update Nav Buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const pageMap = {
+                'home': 0,
+                'story': 1,
+                'concepts': 2,
+                'report': 3,
+                'about': 4
+            };
+            
+            if (buttons[pageMap[pageId]]) {
+                buttons[pageMap[pageId]].classList.add('active');
+            }
+
+            // Scroll to top
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
